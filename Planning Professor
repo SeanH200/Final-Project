@@ -1,0 +1,83 @@
+import tkinter as tk
+from tkinter import messagebox
+class PlanningProfessor:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Planning Professor")
+        self.root.geometry("500x400")
+        self.tasks = []
+        self.grocery_items = []
+        self.menu_frame = tk.Frame(self.root)
+        self.menu_frame.pack(side="top", fill="x")
+        self.content_frame = tk.Frame(self.root)
+        self.content_frame.pack(expand=True, fill="both")
+        self.to_do_button = tk.Button(self.menu_frame, text="To-Do List", command=self.show_todo_list)
+        self.to_do_button.pack(side="left", padx=5, pady=5)
+        self.grocery_button = tk.Button(self.menu_frame, text="Grocery List", command=self.show_grocery_list)
+        self.grocery_button.pack(side="left", padx=5, pady=5)
+        self.show_todo_list()
+    def clear_content(self):
+        for widget in self.content_frame.winfo_children():
+            widget.destroy()
+    def show_todo_list(self):
+        self.clear_content()
+        todo_label = tk.Label(self.content_frame, text="To-Do List", font=("Helvetica", 16))
+        todo_label.pack(pady=10)
+        self.task_entry = tk.Entry(self.content_frame, width=40)
+        self.task_entry.pack(pady=5)
+        add_task_button = tk.Button(self.content_frame, text="Add Task", command=self.add_task)
+        add_task_button.pack(pady=5)
+        delete_task_button = tk.Button(self.content_frame, text="Delete Task", command=self.delete_task)
+        delete_task_button.pack(pady=5)
+        self.task_listbox = tk.Listbox(self.content_frame, height=10, width=50)
+        self.task_listbox.pack(pady=10)
+        for task in self.tasks:
+            self.task_listbox.insert(tk.END, task)
+    def show_grocery_list(self):
+        self.clear_content()
+        grocery_label = tk.Label(self.content_frame, text="Grocery List", font=("Helvetica", 16))
+        grocery_label.pack(pady=10)
+        self.grocery_entry = tk.Entry(self.content_frame, width=40)
+        self.grocery_entry.pack(pady=5)
+        add_grocery_button = tk.Button(self.content_frame, text="Add Grocery Item", command=self.add_grocery_item)
+        add_grocery_button.pack(pady=5)
+        delete_grocery_button = tk.Button(self.content_frame, text="Delete Grocery Item", command=self.delete_grocery_item)
+        delete_grocery_button.pack(pady=5)
+        self.grocery_listbox = tk.Listbox(self.content_frame, height=10, width=50)
+        self.grocery_listbox.pack(pady=10)
+        for item in self.grocery_items:
+            self.grocery_listbox.insert(tk.END, item)
+    def add_task(self):
+        task = self.task_entry.get()
+        if task:
+            self.tasks.append(task)
+            self.task_listbox.insert(tk.END, task)
+            self.task_entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("Input Error", "Please enter a task.")
+    def add_grocery_item(self):
+        item = self.grocery_entry.get()
+        if item:
+            self.grocery_items.append(item)
+            self.grocery_listbox.insert(tk.END, item)
+            self.grocery_entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("Input Error", "Please enter a grocery item.")
+    def delete_task(self):
+        try:
+            selected_task_index = self.task_listbox.curselection()[0]
+            self.task_listbox.delete(selected_task_index)
+            del self.tasks[selected_task_index]
+        except IndexError:
+            messagebox.showwarning("Selection Error", "Please select a task to delete.")
+    def delete_grocery_item(self):
+        try:
+            selected_grocery_index = self.grocery_listbox.curselection()[0]
+            self.grocery_listbox.delete(selected_grocery_index)
+            del self.grocery_items[selected_grocery_index]
+        except IndexError:
+            messagebox.showwarning("Selection Error", "Please select a grocery item to delete.")
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = PlanningProfessor(root)
+    root.mainloop()
